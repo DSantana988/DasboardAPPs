@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Hub - Repositorio de Aplicaciones</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .sidebar-transition {
+            transition: transform 0.3s ease-in-out;
+        }
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .app-status-active { color: #10b981; }
+        .app-status-development { color: #f59e0b; }
+        .app-status-maintenance { color: #ef4444; }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b border-gray-200">
+        <div class="px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center">
+                    <button id="sidebarToggle" class="lg:hidden p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <div class="flex items-center ml-4 lg:ml-0">
+                        <div class="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-cubes text-white text-sm"></i>
+                        </div>
+                        <h1 class="ml-3 text-xl font-semibold text-gray-900">Dashboard Hub</h1>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button class="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg">
+                        <i class="fas fa-bell"></i>
+                    </button>
+                    <div class="flex items-center space-x-2">
+                        <img class="w-8 h-8 rounded-full bg-gray-300" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTYiIGN5PSIxNiIgcj0iMTYiIGZpbGw9IiM2Mzc0ZTciLz4KPHN2ZyB4PSI4IiB5PSI4IiB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSI+CjxjaXJjbGUgY3g9IjgiIGN5PSI2IiByPSIzIiBmaWxsPSJ3aGl0ZSIvPgo8cGF0aCBkPSJNMiAxNGMwLTMuMzEzIDIuNjg3LTYgNi02czYgMi42ODcgNiA2SDE0YzAtMi4yMDktMS43OTEtNC00LTRzLTQgMS43OTEtNCA0SDJaIiBmaWxsPSJ3aGl0ZSIvPgo8L3N2Zz4KPC9zdmc+" alt="Usuario">
+                        <span class="text-sm font-medium text-gray-700">Admin</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="flex">
+        <!-- Sidebar -->
+        <nav id="sidebar" class="sidebar-transition w-64 bg-white shadow-sm h-screen fixed lg:relative z-30 transform -translate-x-full lg:translate-x-0">
+            <div class="p-6">
+                <div class="space-y-6">
+                    <div>
+                        <h2 class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Principal</h2>
+                        <div class="mt-3 space-y-1">
+                            <a href="#" class="nav-link active group flex items-center px-3 py-2 text-sm font-medium rounded-lg" data-section="dashboard">
+                                <i class="fas fa-home mr-3 text-gray-400 group-hover:text-gray-600"></i>
+                                Dashboard
+                            </a>
+                            <a href="#" class="nav-link group flex items-center px-3 py-2 text-sm font-medium rounded-lg" data-section="applications">
+                                <i class="fas fa-th-large mr-3 text-gray-400 group-hover:text-gray-600"></i>
+                                Aplicaciones
+                            </a>
+                            <a href="#" class="nav-link group flex items-center px-3 py-2 text-sm font-medium rounded-lg" data-section="analytics">
+                                <i class="fas fa-chart-bar mr-3 text-gray-400 group-hover:text-gray-600"></i>
+                                Analíticas
+                            </a>
+                        </div>
+                    </div>
+                    <div>
+                        <h2 class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Gestión</h2>
+                        <div class="mt-3 space-y-1">
+                            <a href="#" class="nav-link group flex items-center px-3 py-2 text-sm font-medium rounded-lg" data-section="deployments">
+                                <i class="fas fa-rocket mr-3 text-gray-400 group-hover:text-gray-600"></i>
+                                Despliegues
+                            </a>
+                            <a href="#" class="nav-link group flex items-center px-3 py-2 text-sm font-medium rounded-lg" data-section="settings">
+                                <i class="fas fa-cog mr-3 text-gray-400 group-hover:text-gray-600"></i>
+                                Configuración
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Overlay para mobile -->
+        <div id="sidebarOverlay" class="fixed inset-0 bg-gray-600 bg-opacity-50 z-20 lg:hidden hidden"></div>
+
+        <!-- Main Content -->
+        <main class="flex-1 lg:ml-0">
+            <!-- Dashboard Section -->
+            <div id="dashboard-section" class="section-content">
+                <div class="p-6">
+                    <div class="mb-8">
+                        <h2 class="text-2xl font-bold text-gray-900">Dashboard</h2>
+                        <p class="text-gray-600">Resumen general de tus aplicaciones y estadísticas</p>
+                    </div>
+
+                    <!-- Stats Cards -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                        <div class="bg-white rounded-xl shadow-sm p-6 card-hover">
+                            <div class="flex items-center">
+                                <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-cubes text-blue-600 text-xl"></i>
+                                </div>
+                                <div class="ml-4">
+                                    <p class="text-sm text-gray-600">Total Apps</p>
+                                    <p class="text-2xl font-bold text-gray-900" id="totalApps">12</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-xl shadow-sm p-6 card-hover">
+                            <div class="flex items-center">
+                                <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-check-circle text-green-600 text-xl"></i>
+                                </div>
+                                <div class="ml-4">
+                                    <p class="text-sm text-gray-600">Activas</p>
+                                    <p class="text-2xl font-bold text-gray-900" id="activeApps">8</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-xl shadow-sm p-6 card-hover">
+                            <div class="flex items-center">
+                                <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-code text-yellow-600 text-xl"></i>
+                                </div>
+                                <div class="ml-4">
+                                    <p class="text-sm text-gray-600">En Desarrollo</p>
+                                    <p class="text-2xl font-bold text-gray-900" id="devApps">3</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-xl shadow-sm p-6 card-hover">
+                            <div class="flex items-center">
+                                <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-tools text-red-600 text-xl"></i>
+                                </div>
+                                <div class="ml-4">
+                                    <p class="text-sm text-gray-600">Mantenimiento</p>
+                                    <p class="text-2xl font-bold text-gray-900" id="maintenanceApps">1</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Applications -->
+                    <div class="bg-white rounded-xl shadow-sm p-6">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-lg font-semibold text-gray-900">Aplicaciones Recientes</h3>
+                            <button class="text-indigo-600 hover:text-indigo-500 text-sm font-medium">Ver todas</button>
+                        </div>
+                        <div class="space-y-4" id="recentApps">
+                            <!-- Las aplicaciones recientes se cargarán aquí -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Applications Section -->
+            <div id="applications-section" class="section-content hidden">
+                <div class="p-6">
+                    <div class="mb-8 flex justify-between items-center">
+                        <div>
+                            <h2 class="text-2xl font-bold text-gray-900">Aplicaciones</h2>
+                            <p class="text-gray-600">Gestiona todas tus aplicaciones desde aquí</p>
+                        </div>
+                        <button id="addAppBtn" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg font-medium">
+                            <i class="fas fa-plus mr-2"></i>Nueva Aplicación
+                        </button>
+                    </div>
+
+                    <!-- Applications Grid -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="applicationsGrid">
+                        <!-- Las aplicaciones se cargarán aquí -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analytics Section -->
+            <div id="analytics-section" class="section-content hidden">
+                <div class="p-6">
+                    <div class="mb-8">
+                        <h2 class="text-2xl font-bold text-gray-900">Analíticas</h2>
+                        <p class="text-gray-600">Estadísticas detalladas de uso y rendimiento</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div class="bg-white rounded-xl shadow-sm p-6">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">Distribución por Estado</h3>
+                            <div style="height: 300px;">
+                                <canvas id="statusChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-xl shadow-sm p-6">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">Tendencia de Desarrollo</h3>
+                            <div style="height: 300px;">
+                                <canvas id="trendChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Deployments Section -->
+            <div id="deployments-section" class="section-content hidden">
+                <div class="p-6">
+                    <div class="mb-8">
+                        <h2 class="text-2xl font-bold text-gray-900">Despliegues</h2>
+                        <p class="text-gray-600">Historial y gestión de despliegues</p>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow-sm p-6">
+                        <div class="space-y-4" id="deploymentsList">
+                            <!-- Los despliegues se cargarán aquí -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Section -->
+            <div id="settings-section" class="section-content hidden">
+                <div class="p-6">
+                    <div class="mb-8">
+                        <h2 class="text-2xl font-bold text-gray-900">Configuración</h2>
+                        <p class="text-gray-600">Ajustes generales del dashboard</p>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow-sm p-6">
+                        <div class="space-y-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Nombre del Hub</label>
+                                <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" value="Dashboard Hub">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Descripción</label>
+                                <textarea class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" rows="3">Repositorio centralizado para gestión de aplicaciones</textarea>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm font-medium text-gray-700">Notificaciones</p>
+                                    <p class="text-sm text-gray-600">Recibir alertas de estado de aplicaciones</p>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" class="sr-only peer" checked>
+                                    <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+                                </label>
+                            </div>
+                            <button class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg font-medium">
+                                Guardar Cambios
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal para Nueva Aplicación -->
+    <div id="appModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 z-50 hidden">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-xl shadow-xl max-w-lg w-full">
+                <div class="p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-semibold text-gray-900" id="modalTitle">Nueva Aplicación</h3>
+                        <button id="closeModal" class="text-gray-400 hover:text-gray-600">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <form id="appForm">
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Nombre</label>
+                                <input type="text" id="appName" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Descripción</label>
+                                <textarea id="appDescription" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" rows="3"></textarea>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">URL</label>
+                                <input type="url" id="appUrl" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Estado</label>
+                                <select id="appStatus" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                    <option value="active">Activa</option>
+                                    <option value="development">En Desarrollo</option>
+                                    <option value="maintenance">Mantenimiento</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Tecnología</label>
+                                <input type="text" id="appTech" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="React, Vue, Angular, etc.">
+                            </div>
+                        </div>
+                        <div class="flex justify-end space-x-3 mt-6">
+                            <button type="button" id="cancelBtn" class="px-4 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg font-medium">Cancelar</button>
+                            <button type="submit" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-medium">Guardar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data storage
+        let applications = [
+            {
+                id: 1,
+                name: "Sistema de Gestión",
+                description: "Aplicación para gestión empresarial",
+                url: "https://gestion.ejemplo.com",
+                status: "active",
+                tech: "React, Node.js",
+                created: new Date('2024-01-15'),
+                deployments: 15
+            },
+            {
+                id: 2,
+                name: "E-commerce Platform",
+                description: "Plataforma de comercio electrónico",
+                url: "https://shop.ejemplo.com",
+                status: "active",
+                tech: "Vue.js, Laravel",
+                created: new Date('2024-02-10'),
+                deployments: 12
+            },
+            {
+                id: 3,
+                name: "API Gateway",
+                description: "Gateway para microservicios",
+                url: "https://api.ejemplo.com",
+                status: "development",
+                tech: "Node.js, Express",
+                created: new Date('2024-03-05'),
+                deployments: 8
+            },
+            {
+                id: 4,
+                name: "Dashboard Analytics",
+                description: "Panel de analíticas en tiempo real",
+                url: "",
+                status: "development",
+                tech: "Angular, Python",
+                created: new Date('2024-03-20'),
+                deployments: 3
+            },
+            {
+                id: 5,
+                name: "Mobile App",
+                description: "Aplicación móvil híbrida",
+                url: "",
+                status: "development",
+                tech: "React Native",
+                created: new Date('2024-04-01'),
+                deployments: 2
+            },
+            {
+                id: 6,
+                name: "Legacy System",
+                description: "Sistema heredado en mantenimiento",
+                url: "https://legacy.ejemplo.com",
+                status: "maintenance",
+                tech: "PHP, MySQL",
+                created: new Date('2023-10-15'),
+                deployments: 25
+            }
+        ];
+
+        let currentEditId = null;
+
+        // DOM elements
+        const sidebar = document.getElementById('sidebar');
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+        const appModal = document.getElementById('appModal');
+        const addAppBtn = document.getElementById('addAppBtn');
+        const closeModal = document.getElementById('closeModal');
+        const cancelBtn = document.getElementById('cancelBtn');
+        const appForm = document.getElementById('appForm');
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            loadDashboard();
+            loadApplications();
+            loadAnalytics();
+            loadDeployments();
+            setupEventListeners();
+        });
+
+        // Event listeners
+        function setupEventListeners() {
+            // Sidebar toggle
+            sidebarToggle.addEventListener('click', () => {
+                sidebar.classList.toggle('-translate-x-full');
+                sidebarOverlay.classList.toggle('hidden');
+            });
+
+            sidebarOverlay.addEventListener('click', () => {
+                sidebar.classList.add('-translate-x-full');
+                sidebarOverlay.classList.add('hidden');
+            });
+
+            // Navigation
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const section = e.currentTarget.dataset.section;
+                    showSection(section);
+                    
+                    // Update active nav
+                    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                    e.currentTarget.classList.add('active');
+                });
+            });
+
+            // Modal
+            addAppBtn.addEventListener('click', () => openModal());
+            closeModal.addEventListener('click', () => closeAppModal());
+            cancelBtn.addEventListener('click', () => closeAppModal());
+            appForm.addEventListener('submit', handleFormSubmit);
+
+            // Close modal on outside click
+            appModal.addEventListener('click', (e) => {
+                if (e.target === appModal) closeAppModal();
+            });
+        }
+
+        // Navigation
+        function showSection(sectionName) {
+            document.querySelectorAll('.section-content').forEach(section => {
+                section.classList.add('hidden');
+            });
+            document.getElementById(`${sectionName}-section`).classList.remove('hidden');
+        }
+
+        // Dashboard functions
+        function loadDashboard() {
+            updateStats();
+            loadRecentApps();
+        }
+
+        function updateStats() {
+            const total = applications.length;
+            const active = applications.filter(app => app.status === 'active').length;
+            const development = applications.filter(app => app.status === 'development').length;
+            const maintenance = applications.filter(app => app.status === 'maintenance').length;
+
+            document.getElementById('totalApps').textContent = total;
+            document.getElementById('activeApps').textContent = active;
+            document.getElementById('devApps').textContent = development;
+            document.getElementById('maintenanceApps').textContent = maintenance;
+        }
+
+        function loadRecentApps() {
+            const recentApps = applications
+                .sort((a, b) => b.created - a.created)
+                .slice(0, 5);
+
+            const container = document.getElementById('recentApps');
+            container.innerHTML = recentApps.map(app => `
+                <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-cube text-indigo-600"></i>
+                        </div>
+                        <div>
+                            <p class="font-medium text-gray-900">${app.name}</p>
+                            <p class="text-sm text-gray-600">${app.tech}</p>
+                        </div>
+                    </div>
+                    <span class="text-sm app-status-${app.status}">
+                        <i class="fas fa-circle text-xs mr-1"></i>
+                        ${getStatusText(app.status)}
+                    </span>
+                </div>
+            `).join('');
+        }
+
+        // Applications functions
+        function loadApplications() {
+            const grid = document.getElementById('applicationsGrid');
+            grid.innerHTML = applications.map(app => `
+                <div class="bg-white rounded-xl shadow-sm p-6 card-hover">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-cube text-indigo-600 text-xl"></i>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button onclick="editApp(${app.id})" class="text-gray-400 hover:text-indigo-600">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button onclick="deleteApp(${app.id})" class="text-gray-400 hover:text-red-600">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">${app.name}</h3>
+                    <p class="text-gray-600 text-sm mb-4">${app.description}</p>
+                    <div class="flex items-center justify-between text-sm">
+                        <span class="app-status-${app.status}">
+                            <i class="fas fa-circle text-xs mr-1"></i>
+                            ${getStatusText(app.status)}
+                        </span>
+                        <span class="text-gray-500">${app.tech}</span>
+                    </div>
+                    ${app.url ? `
+                        <div class="mt-4">
+                            <a href="${app.url}" target="_blank" class="block w-full text-center bg-indigo-50 hover:bg-indigo-100 text-indigo-600 py-2 rounded-lg text-sm font-medium">
+                                <i class="fas fa-external-link-alt mr-1"></i>
+                                Abrir Aplicación
+                            </a>
+                        </div>
+                    ` : ''}
+                </div>
+            `).join('');
+        }
+
+        // Analytics functions
+        function loadAnalytics() {
+            setTimeout(() => {
+                createStatusChart();
+                createTrendChart();
+            }, 100);
+        }
+
+        function createStatusChart() {
+            const ctx = document.getElementById('statusChart').getContext('2d');
+            const statusData = {
+                active: applications.filter(app => app.status === 'active').length,
+                development: applications.filter(app => app.status === 'development').length,
+                maintenance: applications.filter(app => app.status === 'maintenance').length
+            };
+
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Activas', 'En Desarrollo', 'Mantenimiento'],
+                    datasets: [{
+                        data: [statusData.active, statusData.development, statusData.maintenance],
+                        backgroundColor: ['#10b981', '#f59e0b', '#ef4444'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        }
+
+        function createTrendChart() {
+            const ctx = document.getElementById('trendChart').getContext('2d');
+            
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun'],
+                    datasets: [{
+                        label: 'Nuevas Apps',
+                        data: [2, 1, 2, 1, 1, 3],
+                        borderColor: '#6366f1',
+                        backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }, {
+                        label: 'Despliegues',
+                        data: [5, 8, 6, 12, 9, 15],
+                        borderColor: '#10b981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        // Deployments functions
+        function loadDeployments() {
+            const container = document.getElementById('deploymentsList');
+            const deployments = [
+                { app: 'Sistema de Gestión', version: 'v2.1.0', date: '2024-04-15', status: 'success' },
+                { app: 'E-commerce Platform', version: 'v1.8.2', date: '2024-04-14', status: 'success' },
+                { app: 'API Gateway', version: 'v0.5.1', date: '2024-04-13', status: 'failed' },
+                { app: 'Dashboard Analytics', version: 'v0.2.0', date: '2024-04-12', status: 'success' },
+                { app: 'Mobile App', version: 'v0.1.0', date: '2024-04-11', status: 'success' }
+            ];
+
+            container.innerHTML = deployments.map(deployment => `
+                <div class="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-10 h-10 ${deployment.status === 'success' ? 'bg-green-100' : 'bg-red-100'} rounded-lg flex items-center justify-center">
+                            <i class="fas ${deployment.status === 'success' ? 'fa-check text-green-600' : 'fa-times text-red-600'}"></i>
+                        </div>
+                        <div>
+                            <p class="font-medium text-gray-900">${deployment.app}</p>
+                            <p class="text-sm text-gray-600">${deployment.version} • ${deployment.date}</p>
+                        </div>
+                    </div>
+                    <span class="text-sm ${deployment.status === 'success' ? 'text-green-600' : 'text-red-600'} font-medium">
+                        ${deployment.status === 'success' ? 'Exitoso' : 'Fallido'}
+                    </span>
+                </div>
+            `).join('');
+        }
+
+        // Modal functions
+        function openModal(app = null) {
+            currentEditId = app ? app.id : null;
+            const modalTitle = document.getElementById('modalTitle');
+            
+            if (app) {
+                modalTitle.textContent = 'Editar Aplicación';
+                document.getElementById('appName').value = app.name;
+                document.getElementById('appDescription').value = app.description;
+                document.getElementById('appUrl').value = app.url;
+                document.getElementById('appStatus').value = app.status;
+                document.getElementById('appTech').value = app.tech;
+            } else {
+                modalTitle.textContent = 'Nueva Aplicación';
+                appForm.reset();
+            }
+            
+            appModal.classList.remove('hidden');
+        }
+
+        function closeAppModal() {
+            appModal.classList.add('hidden');
+            currentEditId = null;
+            appForm.reset();
+        }
+
+        function handleFormSubmit(e) {
+            e.preventDefault();
+            
+            const formData = {
+                name: document.getElementById('appName').value,
+                description: document.getElementById('appDescription').value,
+                url: document.getElementById('appUrl').value,
+                status: document.getElementById('appStatus').value,
+                tech: document.getElementById('appTech').value
+            };
+
+            if (currentEditId) {
+                // Edit existing app
+                const index = applications.findIndex(app => app.id === currentEditId);
+                applications[index] = { ...applications[index], ...formData };
+            } else {
+                // Add new app
+                const newApp = {
+                    id: Date.now(),
+                    ...formData,
+                    created: new Date(),
+                    deployments: 0
+                };
+                applications.push(newApp);
+            }
+
+            closeAppModal();
+            loadDashboard();
+            loadApplications();
+            loadAnalytics();
+        }
+
+        function editApp(id) {
+            const app = applications.find(app => app.id === id);
+            if (app) openModal(app);
+        }
+
+        function deleteApp(id) {
+            if (confirm('¿Estás seguro de que quieres eliminar esta aplicación?')) {
+                applications = applications.filter(app => app.id !== id);
+                loadDashboard();
+                loadApplications();
+                loadAnalytics();
+            }
+        }
+
+        // Utility functions
+        function getStatusText(status) {
+            const statusMap = {
+                active: 'Activa',
+                development: 'En Desarrollo',
+                maintenance: 'Mantenimiento'
+            };
+            return statusMap[status] || status;
+        }
+
+        // Add custom styles for active nav
+        const style = document.createElement('style');
+        style.textContent = `
+            .nav-link {
+                color: #6b7280;
+                transition: all 0.2s ease;
+            }
+            .nav-link:hover {
+                color: #4f46e5;
+                background-color: #f8fafc;
+            }
+            .nav-link.active {
+                color: #4f46e5;
+                background-color: #eef2ff;
+                font-weight: 600;
+            }
+            .nav-link.active i {
+                color: #4f46e5 !important;
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
