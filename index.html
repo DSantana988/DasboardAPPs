@@ -7,6 +7,8 @@
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
     <style>
         .sidebar-transition {
             transition: transform 0.3s ease-in-out;
@@ -74,6 +76,10 @@
                             <a href="#" class="nav-link group flex items-center px-3 py-2 text-sm font-medium rounded-lg" data-section="analytics">
                                 <i class="fas fa-chart-bar mr-3 text-gray-400 group-hover:text-gray-600"></i>
                                 Analíticas
+                            </a>
+                            <a href="#" class="nav-link group flex items-center px-3 py-2 text-sm font-medium rounded-lg" data-section="calendar">
+                                <i class="fas fa-calendar-alt mr-3 text-gray-400 group-hover:text-gray-600"></i>
+                                Calendario
                             </a>
                         </div>
                     </div>
@@ -209,6 +215,19 @@
                                 <canvas id="trendChart"></canvas>
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Calendar Section -->
+            <div id="calendar-section" class="section-content hidden">
+                <div class="p-6">
+                    <div class="mb-8">
+                        <h2 class="text-2xl font-bold text-gray-900">Calendario</h2>
+                        <p class="text-gray-600">Agenda y planificación de asesorías</p>
+                    </div>
+                    <div class="bg-white rounded-xl shadow-sm p-6">
+                        <div id="calendar"></div>
                     </div>
                 </div>
             </div>
@@ -397,6 +416,7 @@
             loadDashboard();
             loadApplications();
             loadAnalytics();
+            loadCalendar();
             loadDeployments();
             setupEventListeners();
         });
@@ -605,6 +625,23 @@
                     }
                 }
             });
+        }
+
+        // Calendar functions
+        function loadCalendar() {
+            const calendarEl = document.getElementById('calendar');
+            const calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                },
+                locale: 'es',
+                height: 600,
+                events: []
+            });
+            calendar.render();
         }
 
         // Deployments functions
